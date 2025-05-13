@@ -118,5 +118,7 @@ CREATE TABLE clients (
     id INT PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(100),
     last_name VARCHAR(100),
+    email VARCHAR(255),
+    phone_number VARCHAR(20)
     country_of_origin VARCHAR(100)
 );

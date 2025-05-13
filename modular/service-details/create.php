@@ -34,7 +34,6 @@ try {
     http_response_code(201);
     echo json_encode([
         "message" => "Service detail created successfully",
-        "id" => $detail_id
     ]);
 
 } catch (Exception $e) {

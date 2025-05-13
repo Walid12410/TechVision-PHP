@@ -12,6 +12,15 @@ if ($id === 0) {
 
 $data = json_decode(file_get_contents("php://input"), true);
 
+$requiredFields = ['first_name', 'last_name', 'email', 'phone_number', 'country_of_origin'];
+foreach ($requiredFields as $field) {
+    if (empty($data[$field])) {
+        http_response_code(400);
+        echo json_encode(["error" => "Missing or empty field: $field"]);
+        exit;
+    }
+}
+
 try {
     // Check if client exists
     $checkSql = "SELECT id FROM clients WHERE id = ?";
@@ -25,16 +34,17 @@ try {
         exit;
     }
 
-    $sql = "UPDATE clients SET 
-            first_name = ?, 
-            last_name = ?, 
-            country_of_origin = ? 
+    // ✅ Define the UPDATE SQL
+    $sql = "UPDATE clients 
+            SET first_name = ?, last_name = ?, email = ?, phone_number = ?, country_of_origin = ? 
             WHERE id = ?";
-            
+
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssi", 
+    $stmt->bind_param("sssssi", 
         $data['first_name'], 
         $data['last_name'], 
+        $data['email'],
+        $data['phone_number'],
         $data['country_of_origin'],
         $id
     );
@@ -43,7 +53,7 @@ try {
         http_response_code(200);
         echo json_encode(["message" => "Client updated successfully"]);
     } else {
-        throw new Exception("Failed to update client");
+        throw new Exception("Failed to update client: " . $stmt->error);
     }
 
 } catch (Exception $e) {
@@ -51,6 +61,7 @@ try {
     echo json_encode(["error" => $e->getMessage()]);
 }
 
+// Always close your statements and connection
 $checkStmt->close();
 $stmt->close();
 $conn->close();

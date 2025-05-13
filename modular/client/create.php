@@ -4,18 +4,31 @@ include "../../config/header.php";
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (!isset($data['first_name']) || !isset($data['last_name']) || !isset($data['country_of_origin'])) {
+// Required field check
+$required = ['first_name', 'last_name', 'email', 'phone_number', 'country_of_origin'];
+foreach ($required as $field) {
+    if (empty($data[$field])) {
+        http_response_code(400);
+        echo json_encode(["error" => "Missing or empty field: $field"]);
+        exit;
+    }
+}
+
+// Email format validation
+if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
     http_response_code(400);
-    echo json_encode(["error" => "Missing required fields"]);
+    echo json_encode(["error" => "Invalid email format"]);
     exit;
 }
 
 try {
-    $sql = "INSERT INTO clients (first_name, last_name, country_of_origin) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO clients (first_name, last_name, email, phone_number, country_of_origin) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sss", 
+    $stmt->bind_param("sssss", 
         $data['first_name'], 
         $data['last_name'], 
+        $data['email'], 
+        $data['phone_number'], 
         $data['country_of_origin']
     );
     
@@ -24,10 +37,9 @@ try {
         http_response_code(201);
         echo json_encode([
             "message" => "Client created successfully",
-            "id" => $client_id
         ]);
     } else {
-        throw new Exception("Failed to create client");
+        throw new Exception("Failed to create client: " . $stmt->error);
     }
 
 } catch (Exception $e) {

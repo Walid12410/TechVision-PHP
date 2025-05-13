@@ -25,7 +25,6 @@ try {
         http_response_code(201);
         echo json_encode([
             "message" => "Member created successfully",
-            "id" => $member_id
         ]);
     } else {
         throw new Exception("Failed to create member");

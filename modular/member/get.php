@@ -13,7 +13,7 @@ $totalRows = $countResult->fetch_assoc()['total'];
 $totalPages = ceil($totalRows / $limit);
 
 // Get members with pagination
-$sql = "SELECT * FROM members LIMIT ? OFFSET ?";
+$sql = "SELECT * FROM members ORDER BY id DESC LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $limit, $offset);
 $stmt->execute();

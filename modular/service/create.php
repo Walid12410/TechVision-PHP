@@ -38,29 +38,11 @@ try {
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sss", $data['service_name'], $data['service_description'], $imageUrl);
     $stmt->execute();
-    $service_id = $conn->insert_id;
-
-    // Insert service details if provided
-    if (isset($data['details']) && !empty($data['details'])) {
-        $details = json_decode($data['details'], true);
-        if (is_array($details)) {
-            $detailsSql = "INSERT INTO service_details (service_id, detail_description) VALUES (?, ?)";
-            $detailsStmt = $conn->prepare($detailsSql);
-            
-            foreach ($details as $detail) {
-                $detailsStmt->bind_param("is", $service_id, $detail['detail_description']);
-                $detailsStmt->execute();
-            }
-            $detailsStmt->close();
-        }
-    }
 
     $conn->commit();
     http_response_code(201);
     echo json_encode([
-        "message" => "Service created successfully",
-        "id" => $service_id,
-        "image_url" => $imageUrl
+        "message" => "Service created successfully"
     ]);
 
 } catch (Exception $e) {

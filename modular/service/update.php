@@ -31,27 +31,6 @@ try {
     $stmt->bind_param("ssi", $data['service_name'], $data['service_description'], $id);
     $stmt->execute();
 
-    // Update service details if provided
-    if (isset($data['details'])) {
-        // Delete existing details
-        $deleteDetailsSql = "DELETE FROM service_details WHERE service_id = ?";
-        $deleteStmt = $conn->prepare($deleteDetailsSql);
-        $deleteStmt->bind_param("i", $id);
-        $deleteStmt->execute();
-
-        // Insert new details
-        if (!empty($data['details'])) {
-            $detailsSql = "INSERT INTO service_details (service_id, detail_description) VALUES (?, ?)";
-            $detailsStmt = $conn->prepare($detailsSql);
-            
-            foreach ($data['details'] as $detail) {
-                $detailsStmt->bind_param("is", $id, $detail['detail_description']);
-                $detailsStmt->execute();
-            }
-            $detailsStmt->close();
-        }
-        $deleteStmt->close();
-    }
 
     $conn->commit();
     http_response_code(200);
