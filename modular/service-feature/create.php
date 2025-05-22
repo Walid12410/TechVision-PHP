@@ -4,9 +4,9 @@ include "../../config/header.php";
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (!isset($data['service_id']) || !isset($data['feature_text'])) {
+if (!isset($data['service_id'])) {
     http_response_code(400);
-    echo json_encode(["error" => "Missing required fields"]);
+    echo json_encode(["error" => "Service ID is required"]);
     exit;
 }
 
@@ -35,9 +35,9 @@ try {
     }
 
     // Insert feature
-    $sql = "INSERT INTO service_features (service_id, feature_text) VALUES (?, ?)";
+    $sql = "INSERT INTO service_features (service_id) VALUES (?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("is", $data['service_id'], $data['feature_text']);
+    $stmt->bind_param("i", $data['service_id']);
     $stmt->execute();
     $feature_id = $conn->insert_id;
 

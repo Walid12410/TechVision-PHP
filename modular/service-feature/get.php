@@ -14,7 +14,6 @@ while($row = $result->fetch_assoc()) {
     $features[] = [
         "id" => $row['id'],
         "service_id" => $row['service_id'],
-        "feature_text" => $row['feature_text'],
         "service" => [
             "name" => $row['service_name'],
             "description" => $row['service_description'],

@@ -34,14 +34,13 @@ try {
     }
 
     // Insert project
-    $sql = "INSERT INTO projects (client_id, member_id, project_name, project_description, 
+    $sql = "INSERT INTO projects (client_id, project_name, project_description, 
             image_url, project_cost, start_date, end_date) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("iisssdss", 
         $data['client_id'],
-        $data['member_id'],
         $data['project_name'],
         $data['project_description'],
         $imageUrl,

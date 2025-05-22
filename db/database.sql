@@ -1,4 +1,3 @@
--- 1. Settings
 CREATE TABLE settings (
     id INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(255),
@@ -10,7 +9,24 @@ CREATE TABLE settings (
     phone_number VARCHAR(20)
 );
 
--- 2. Services
+CREATE TABLE members (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(255),
+    phone_number VARCHAR(20),
+    field_of_expertise VARCHAR(100)
+);
+
+CREATE TABLE clients (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(255),
+    phone_number VARCHAR(20)
+    country_of_origin VARCHAR(100)
+);
+
 CREATE TABLE services (
     id INT PRIMARY KEY AUTO_INCREMENT,
     service_name VARCHAR(255),
@@ -18,7 +34,6 @@ CREATE TABLE services (
     image_url VARCHAR(255)
 );
 
--- 3. Service Details
 CREATE TABLE service_details (
     id INT PRIMARY KEY AUTO_INCREMENT,
     service_id INT,
@@ -26,7 +41,6 @@ CREATE TABLE service_details (
     FOREIGN KEY (service_id) REFERENCES services(id)
 );
 
--- 4. Service Features
 CREATE TABLE service_features (
     id INT PRIMARY KEY AUTO_INCREMENT,
     service_id INT,
@@ -34,7 +48,6 @@ CREATE TABLE service_features (
 );
 
 
--- 5. About Us
 CREATE TABLE about_us (
     id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255),
@@ -44,7 +57,6 @@ CREATE TABLE about_us (
     image_url VARCHAR(255)
 );
 
--- 6. Users
 CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(100),
@@ -55,22 +67,17 @@ CREATE TABLE users (
     phone_number VARCHAR(20)
 );
 
--- 7. Projects
 CREATE TABLE projects (
     id INT PRIMARY KEY AUTO_INCREMENT,
     client_id INT,
-    member_id INT,
     project_name VARCHAR(255),
     project_description TEXT,
     image_url VARCHAR(255),
     project_cost DECIMAL(10,2),
     start_date DATE,
-    end_date DATE,
-    FOREIGN KEY (client_id) REFERENCES clients(id),
-    FOREIGN KEY (member_id) REFERENCES members(id)
+    end_date DATE
 );
 
--- 8. Project Details
 CREATE TABLE project_details (
     id INT PRIMARY KEY AUTO_INCREMENT,
     project_id INT,
@@ -78,7 +85,18 @@ CREATE TABLE project_details (
     FOREIGN KEY (project_id) REFERENCES projects(id)
 );
 
--- 9. Project Views
+CREATE TABLE project_members (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    project_id INT,
+    member_id INT,
+    cost DECIMAL(10,2),
+    cost_received DECIMAL(10,2),
+    start_date DATE,
+    end_date DATE,
+    FOREIGN KEY (project_id) REFERENCES projects(id),
+    FOREIGN KEY (member_id) REFERENCES members(id)
+);
+
 CREATE TABLE project_views (
     id INT PRIMARY KEY AUTO_INCREMENT,
     view_title VARCHAR(255),
@@ -88,7 +106,6 @@ CREATE TABLE project_views (
     view_link VARCHAR(255)
 );
 
--- 10. Pricing Plans
 CREATE TABLE pricing_plans (
     id INT PRIMARY KEY AUTO_INCREMENT,
     plan_title VARCHAR(255),
@@ -104,21 +121,3 @@ CREATE TABLE pricing_details (
     FOREIGN KEY (pricing_id) REFERENCES pricing_plans(id)
 );
 
--- 11. Members
-CREATE TABLE members (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
-    email VARCHAR(255),
-    phone_number VARCHAR(20)
-);
-
--- 12. Clients
-CREATE TABLE clients (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
-    email VARCHAR(255),
-    phone_number VARCHAR(20)
-    country_of_origin VARCHAR(100)
-);

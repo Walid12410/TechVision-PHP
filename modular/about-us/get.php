@@ -8,15 +8,9 @@ try {
     
     if ($result->num_rows > 0) {
         $about = $result->fetch_assoc();
-        echo json_encode([
-            "status" => "success",
-            "data" => $about
-        ]);
+        echo json_encode($about);
     } else {
-        echo json_encode([
-            "status" => "success",
-            "data" => null
-        ]);
+        echo json_encode(null);
     }
     
     http_response_code(200);

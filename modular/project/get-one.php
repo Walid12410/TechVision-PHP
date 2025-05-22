@@ -11,13 +11,11 @@ if ($id === 0) {
 }
 
 try {
-    // Get project with client and member information
+    // Get project with client information only
     $sql = "SELECT p.*, 
-            c.first_name as client_first_name, c.last_name as client_last_name,
-            m.first_name as member_first_name, m.last_name as member_last_name
+            c.first_name as client_first_name, c.last_name as client_last_name
             FROM projects p
             LEFT JOIN clients c ON p.client_id = c.id
-            LEFT JOIN members m ON p.member_id = m.id
             WHERE p.id = ?";
 
     $stmt = $conn->prepare($sql);
@@ -59,11 +57,6 @@ try {
             'id' => (int)$project['client_id'],
             'first_name' => $project['client_first_name'],
             'last_name' => $project['client_last_name']
-        ],
-        'member' => [
-            'id' => (int)$project['member_id'],
-            'first_name' => $project['member_first_name'],
-            'last_name' => $project['member_last_name']
         ],
         'details' => $details
     ];

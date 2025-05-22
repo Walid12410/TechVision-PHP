@@ -7,13 +7,11 @@ try {
     $limit = isset($_GET['limit']) ? min(max(1, (int)$_GET['limit']), 50) : 10;
     $offset = ($page - 1) * $limit;
 
-    // Get projects with client and member information
+    // Get projects with client information only
     $sql = "SELECT p.*, 
-            c.first_name as client_first_name, c.last_name as client_last_name,
-            m.first_name as member_first_name, m.last_name as member_last_name
+            c.first_name as client_first_name, c.last_name as client_last_name
             FROM projects p
             LEFT JOIN clients c ON p.client_id = c.id
-            LEFT JOIN members m ON p.member_id = m.id
             ORDER BY p.id DESC LIMIT ? OFFSET ?";
 
     $stmt = $conn->prepare($sql);
@@ -38,10 +36,6 @@ try {
             'client' => [
                 'id' => (int)$row['client_id'],
                 'name' => $row['client_first_name'] . ' ' . $row['client_last_name']
-            ],
-            'member' => [
-                'id' => (int)$row['member_id'],
-                'name' => $row['member_first_name'] . ' ' . $row['member_last_name']
             ]
         ];
     }

@@ -31,7 +31,6 @@ try {
             start_date = ?,
             end_date = ?,
             client_id = ?,
-            member_id = ?
             WHERE id = ?";
             
     $stmt = $conn->prepare($sql);
@@ -42,7 +41,6 @@ try {
         $data['start_date'],
         $data['end_date'],
         $data['client_id'],
-        $data['member_id'],
         $id
     );
     
