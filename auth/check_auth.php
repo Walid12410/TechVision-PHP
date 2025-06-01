@@ -1,11 +1,13 @@
 <?php
-require 'auth_middleware.php';
+require './auth.php';
 
-header('Content-Type: application/json');
+// This will:
+$user = check_auth(); // returns user array or sends 401 error + exit
 
-$user = verifyToken(true); // or verifyToken(true) for admin-only
-
-echo json_encode(["message" => "Authenticated", "user" => $user]);
-
+// Now you have user info, e.g.:
+echo json_encode([
+    'message' => 'You are authenticated!',
+    'user' => $user
+]);
 
 ?>
