@@ -8,7 +8,7 @@ $last_name = $conn->real_escape_string($data['last_name'] ?? '');
 $email = $conn->real_escape_string($data['email'] ?? '');
 $password = $data['password'] ?? '';
 $phone_number = $conn->real_escape_string($data['phone_number'] ?? '');
-$role = 'user'; // default role
+$role = 'admin'; // default role
 
 if (!$email || !$password || !$first_name || !$last_name) {
     http_response_code(400);

@@ -1,6 +1,7 @@
 <?php
-require '../config/connection.php';
-require './jwt_helper.php';
+require __DIR__ . "/../config/header.php"; // Adjust path as needed
+require __DIR__ . "/../config/connection.php"; // Adjust path as needed
+require __DIR__ . "/jwt_helper.php"; // Adjust path as needed
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -39,19 +40,22 @@ $payload = [
 ];
 
 // Create JWT token
-$token = jwt_encode($payload, 3600*24); // valid 1 day
+$token = jwt_encode($payload, 3600 * 24); // valid 1 day
 
 // Set token in httpOnly secure cookie
+// In dev only!
 setcookie('token', $token, [
-    'expires' => time() + 3600*24, // 1 day
-    'path' => '/',
-    'domain' => '', // set your domain if needed
-    'secure' => isset($_SERVER['HTTPS']),
+    'expires' => time() + 3600 * 24, // 1 day
+    'path' => '/',                   // ensure cookie is sent on all routes
     'httponly' => true,
-    'samesite' => 'Strict'
+    'secure' => true,               // ✅ Must be true in production (HTTPS only)
+    'samesite' => 'None',           // ✅ Required for cross-site cookies with credentials
+    'domain' => 'techverseagency.com',
 ]);
+
 
 // Return user data (except password)
 unset($user['password']);
 echo json_encode(['user' => $user]);
+
 ?>

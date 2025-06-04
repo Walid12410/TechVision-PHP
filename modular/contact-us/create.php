@@ -4,13 +4,32 @@ include "../../config/header.php";
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-// Validate required fields
-if (!isset($data['name']) || !isset($data['email']) || !isset($data['message'])
-    || !isset($data['subject']) || !isset($data['phone_number'])) {
+// Check required fields
+if (!isset($data['name'], $data['email'], $data['message'], $data['subject'], $data['phone_number'], $data['recaptchaToken'])) {
     http_response_code(400);
     echo json_encode([
         "status" => "error",
-        "message" => "Name, email and message are required"
+        "message" => "Name, email, message, subject, phone number and reCAPTCHA token are required"
+    ]);
+    exit;
+}
+
+// Your secret key (get this from Google reCAPTCHA admin console)
+$recaptchaSecret = "YOUR_SECRET_KEY";
+
+// Verify reCAPTCHA token by sending request to Google API
+$recaptchaResponse = $data['recaptchaToken'];
+$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+
+$verifyResponse = file_get_contents($verifyUrl . '?secret=' . urlencode($recaptchaSecret) . '&response=' . urlencode($recaptchaResponse));
+$responseData = json_decode($verifyResponse, true);
+
+if (!$responseData['success']) {
+    // reCAPTCHA failed
+    http_response_code(400);
+    echo json_encode([
+        "status" => "error",
+        "message" => "reCAPTCHA verification failed. Please try again."
     ]);
     exit;
 }
@@ -23,7 +42,7 @@ try {
     $stmt->bind_param("sssss", 
         $data['name'],
         $data['email'],
-        $data['phone_number'] ,
+        $data['phone_number'],
         $data['subject'],
         $data['message']
     );
@@ -49,5 +68,4 @@ try {
     if (isset($stmt)) $stmt->close();
     if (isset($conn)) $conn->close();
 }
-
 ?>

@@ -1,6 +1,11 @@
 <?php
 include "../../config/connection.php";
 include "../../config/header.php";
+include "../../auth/auth.php";
+
+// Check if the user is authenticated
+is_admin(); // This will throw 401 if not authenticated
+
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
@@ -25,7 +30,10 @@ try {
         throw new Exception("Project not found");
     }
 
-    // Delete project details first (foreign key constraint)
+    // Delete project members first
+    $conn->query("DELETE FROM project_members WHERE project_id = $id");
+
+    // Delete project details
     $conn->query("DELETE FROM project_details WHERE project_id = $id");
     
     // Delete project

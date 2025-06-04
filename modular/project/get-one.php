@@ -1,6 +1,11 @@
 <?php
 include "../../config/connection.php";
 include "../../config/header.php";
+include "../../auth/auth.php";
+
+// Check if the user is authenticated
+is_admin(); // This will throw 401 if not authenticated
+
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
@@ -11,7 +16,7 @@ if ($id === 0) {
 }
 
 try {
-    // Get project with client information only
+    // Get project with client information
     $sql = "SELECT p.*, 
             c.first_name as client_first_name, c.last_name as client_last_name
             FROM projects p
@@ -45,6 +50,37 @@ try {
         ];
     }
 
+    // Get project members
+    $membersSql = "SELECT pm.*, 
+                   m.first_name, m.last_name, m.email, 
+                   m.phone_number, m.field_of_expertise
+                   FROM project_members pm
+                   JOIN members m ON pm.member_id = m.id
+                   WHERE pm.project_id = ?";
+    $membersStmt = $conn->prepare($membersSql);
+    $membersStmt->bind_param("i", $id);
+    $membersStmt->execute();
+    $membersResult = $membersStmt->get_result();
+
+    $members = [];
+    while ($row = $membersResult->fetch_assoc()) {
+        $members[] = [
+            'id' => (int)$row['id'],
+            'member' => [
+                'id' => (int)$row['member_id'],
+                'first_name' => $row['first_name'],
+                'last_name' => $row['last_name'],
+                'email' => $row['email'],
+                'phone_number' => $row['phone_number'],
+                'field_of_expertise' => $row['field_of_expertise']
+            ],
+            'cost' => (float)$row['cost'],
+            'cost_received' => (float)$row['cost_received'],
+            'start_date' => $row['start_date'],
+            'end_date' => $row['end_date']
+        ];
+    }
+
     $response = [
         'id' => (int)$project['id'],
         'project_name' => $project['project_name'],
@@ -58,7 +94,8 @@ try {
             'first_name' => $project['client_first_name'],
             'last_name' => $project['client_last_name']
         ],
-        'details' => $details
+        'details' => $details,
+        'members' => $members
     ];
 
     echo json_encode($response);
@@ -70,6 +107,7 @@ try {
 } finally {
     if (isset($stmt)) $stmt->close();
     if (isset($detailsStmt)) $detailsStmt->close();
+    if (isset($membersStmt)) $membersStmt->close();
     if (isset($conn)) $conn->close();
 }
 ?>

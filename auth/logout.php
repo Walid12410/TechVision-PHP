@@ -1,4 +1,7 @@
 <?php
+
+require __DIR__ . "/../config/header.php"; // Adjust path as needed
+
 // Clear token cookie by setting expiry to past
 setcookie('token', '', [
     'expires' => time() - 3600,

@@ -1,6 +1,11 @@
 <?php
 include "../../config/connection.php";
 include "../../config/header.php";
+include "../../auth/auth.php";
+
+// Check if the user is authenticated
+is_admin(); // This will throw 401 if not authenticated
+
 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;

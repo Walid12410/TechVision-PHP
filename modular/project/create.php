@@ -1,6 +1,11 @@
 <?php
 include "../../config/connection.php";
 include "../../config/header.php";
+include "../../auth/auth.php";
+
+// Check if the user is authenticated
+is_admin(); // This will throw 401 if not authenticated
+
 
 $uploadDir = "../../images/projects/";
 if (!file_exists($uploadDir)) {
@@ -69,8 +74,7 @@ try {
     $conn->commit();
     http_response_code(201);
     echo json_encode([
-        "message" => "Project created successfully",
-        "id" => $project_id
+        "message" => "Project created successfully"
     ]);
 
 } catch (Exception $e) {

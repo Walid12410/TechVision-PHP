@@ -1,7 +1,7 @@
 <?php
 // auth.php
-require "../config/connection.php"; // Adjust the path as needed
-require "./jwt_helper.php"; // Include your JWT helper functions
+require __DIR__ . "/jwt_helper.php";
+require __DIR__ . "/../config/connection.php";
 
 /**
  * Attempt to authenticate the incoming request via the "token" cookie.

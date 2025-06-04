@@ -1,35 +1,25 @@
 <?php
-// headers.php - Centralized header configuration
+// MUST be the very first output in your PHP script — no whitespace above
 
-// Always return JSON response
-header('Content-Type: application/json');
-
-// Handle CORS (Cross-Origin Resource Sharing), especially if you're working with a frontend
-// header('Access-Control-Allow-Origin: *');  // You can restrict this to your domain instead of "*"
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');  // Include Authorization if using tokens
-
-// Additional security headers can be added here, if needed
-// For example, you can add HTTP Strict Transport Security (HSTS) for HTTPS sites:
-// header("Strict-Transport-Security: max-age=31536000; includeSubDomains");
-
-// If it's a preflight request, exit early
+// Handle CORS preflight OPTIONS request early and exit
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    header('Access-Control-Allow-Origin: http://localhost:5173');  // Your frontend URL
+    header('Access-Control-Allow-Credentials: true');              // Required if cookies/sessions are involved
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
     http_response_code(200);
     exit();
 }
 
+// For actual requests, send these headers:
+header('Content-Type: application/json; charset=UTF-8');
+header('Access-Control-Allow-Origin: http://localhost:5173');      // Must exactly match frontend origin
+header('Access-Control-Allow-Credentials: true');                  // Needed for cookies/session
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// Prevent XSS (Cross-Site Scripting)
+// Optional but recommended security headers
 header('X-XSS-Protection: 1; mode=block');
-
-// Prevent clickjacking
 header('X-Frame-Options: SAMEORIGIN');
-
-// Prevent content sniffing
 header('X-Content-Type-Options: nosniff');
-
-// Optionally, specify the character encoding
-header('Content-Encoding: UTF-8');
 ?>

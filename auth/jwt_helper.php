@@ -2,6 +2,7 @@
 // Simple JWT functions without external libs
 
 // Secret key - keep this secret and secure
+define('JWT_SECRET', '');
 
 // Generate JWT token
 function jwt_encode($payload, $exp = 3600) {

@@ -1,4 +1,5 @@
 <?php
+require __DIR__ . "/../config/header.php"; // Adjust path as needed
 require './auth.php';
 
 // This will:
